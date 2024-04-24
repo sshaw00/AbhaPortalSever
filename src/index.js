@@ -25,7 +25,7 @@ app.get("/*", function (re1, res) {
     path.join(__dirname, "../../client/build/index.html"),
     function (err) {
       if (err) {
-        res.send(500).send(stringify(err));
+        res.send(500).send(err);
       }
     }
   );

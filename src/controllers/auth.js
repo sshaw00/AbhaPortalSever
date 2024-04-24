@@ -108,7 +108,7 @@ exports.forgotpassword = async (req, res) => {
 
   try {
     const token = jwt.sign({ id: user.rows[0].trainer_id }, SECRET, {
-      expiresIn: "1 Day",
+      expiresIn: "5m",
     });
 
     var transporter = nodemailer.createTransport({
@@ -157,7 +157,6 @@ exports.resetpassword = async (req, res) => {
 
   jwt.verify(token, SECRET, (err, decoded) => {
     if (err) {
-      alert("Error With Token");
       return res.status(500).json({
         error: "Error with Token",
       });

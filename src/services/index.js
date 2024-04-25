@@ -6,11 +6,6 @@ const pool = new Pool({
   database: process.env.PSQL_DATABASE,
   password: process.env.PSQL_PASSWORD,
   port: process.env.PSQL_PORT,
-
-  // ssl: {
-  //   require: true,
-  //   rejectUnauthorized: false,
-  // },
 });
 module.exports = {
   query: (text, params) => pool.query(text, params),

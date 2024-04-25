@@ -1,6 +1,7 @@
 const { check } = require("express-validator");
-const db = require("../db");
 const { compare } = require("bcryptjs");
+const { queryDB } = require("../services/queryDB");
+const queries = require("../queryConstants/authQueries")
 
 //password
 const password = check("password")
@@ -14,20 +15,14 @@ const email = check("email")
 
 //check if email exists
 const emailExists = check("email").custom(async (value) => {
-  const { rows } = await db.query("SELECT * from trainer WHERE email = $1", [
-    value,
-  ]);
-
+  const { rows } = await queryDB(queries.particularTrainerByEmail,[value],"get trainner by mail")
   if (rows.length) {
     throw new Error("Email already exists.");
   }
 });
 
 const EmailDoesNotExist = check("email").custom(async (value) => {
-  const { rows } = await db.query("SELECT * from trainer WHERE email = $1", [
-    value,
-  ]);
-
+  const { rows } = await queryDB(queries.particularTrainerByEmail,[value],"get trainner by mail")
   if (!rows.length) {
     console.log("Email does not exist.");
     throw new Error("Email does not exist.");
@@ -38,9 +33,7 @@ const EmailDoesNotExist = check("email").custom(async (value) => {
 
 //login validation
 const loginFieldsCheck = check("email").custom(async (value, { req }) => {
-  const user = await db.query("SELECT * from trainer WHERE email = $1", [
-    value,
-  ]);
+  const user = await queryDB(queries.particularTrainerByEmail,[value],"get trainner by mail")
 
   if (!user.rows.length) {
     throw new Error("Email does not exists.");

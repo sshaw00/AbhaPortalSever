@@ -1,10 +1,11 @@
-const db = require("../db");
 const { hash } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 const { SECRET, CLIENT_URL } = require("../constants");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { queryDB } = require("../services/queryDB");
+const queries = require("../queryConstants/authQueries")
 
 exports.random = async (req, res) => {
   try {
@@ -15,7 +16,7 @@ exports.random = async (req, res) => {
 };
 exports.getUsers = async (req, res) => {
   try {
-    const { rows } = await db.query("select trainer_id,email from trainer");
+    const { rows } = await queryDB (queries.trainerEmailID,[],"get email and id of all trainers")
     console.log({ rows });
     return res.status(200).json({
       success: true,
@@ -34,12 +35,7 @@ exports.register = async (req, res) => {
   try {
     const hashedPassword = await hash(password, 10);
     const status = true;
-
-    await db.query(
-      "insert into trainer(email,password,name,phone,status) values ($1 , $2, $3, $4, $5)",
-      [email, hashedPassword, name, phone, status]
-    );
-
+    await queryDB(queries.registerTrainer,[email, hashedPassword, name, phone, status],"register a trainer")
     return res.status(201).json({
       success: true,
       message: "The registraion was successfull",
@@ -100,9 +96,7 @@ exports.logout = async (req, res) => {
 
 exports.forgotpassword = async (req, res) => {
   const { email } = req.body;
-  const user = await db.query("SELECT * from trainer WHERE email = $1", [
-    email,
-  ]);
+  const user = await queryDB(queries.particularTrainerByEmail,[email],"get all data of a trainer");
 
   const secret = SECRET + user.rows[0].password;
 
@@ -164,11 +158,7 @@ exports.resetpassword = async (req, res) => {
       bcrypt
         .hash(password, 10)
         .then((hash) => {
-          const query = {
-            text: "UPDATE trainer SET password = $1 WHERE trainer_id = $2 RETURNING *",
-            values: [hash, id],
-          };
-          db.query(query)
+          queryDB(queries.updatePassword,[hash, id])
             .then((u) =>
               res.status(201).json({
                 success: true,

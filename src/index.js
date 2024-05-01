@@ -21,16 +21,16 @@ app.use(
   })
 );
 
-app.get("/*", function (re1, res) {
-  res.sendFile(
-    path.join(__dirname, "../../client/build/index.html"),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    }
-  );
-});
+// app.get("/*", function (req, res) {
+//   res.sendFile(
+//     path.join(__dirname, "../../client/build/index.html"),
+//     function (err) {
+//       if (err) {
+//         res.status(500).send(err);
+//       }
+//     }
+//   );
+// });
 
 require("./middlewares/passport-middleware");
 
@@ -67,7 +67,9 @@ pool.connect((err, client, done) => {
     console.error("Error connecting to PostgreSQL database:", err);
     process.exit(1);
   } else {
-    console.log(`Connected to database at ${process.env.PSQL_HOST}:${process.env.PSQL_PORT}/${process.env.PSQL_DATABASE}`);
+    console.log(
+      `Connected to database at ${process.env.PSQL_HOST}:${process.env.PSQL_PORT}/${process.env.PSQL_DATABASE}`
+    );
     app.listen(PORT, () => {
       console.log(`The app is running at http://localhost:${PORT}`);
     });

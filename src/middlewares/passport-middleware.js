@@ -2,7 +2,7 @@ const passport = require("passport");
 const { Strategy } = require("passport-jwt");
 const { SECRET } = require("../constants");
 const { queryDB } = require("../services/queryDB");
-const queries = require("../queryConstants/authQueries")
+const queries = require("../queryConstants/authQueries");
 
 const cookieExtractor = function (req) {
   let token = null;
@@ -18,7 +18,7 @@ const opts = {
 passport.use(
   new Strategy(opts, async ({ id }, done) => {
     try {
-      const { rows } = await queryDB(queries.particularTrainerById,[id],"get trainner by ID");
+      const { rows } = await queryDB(queries.particularTrainerById, [id]);
       if (!rows.length) {
         throw new Error("401 not authorized");
       }

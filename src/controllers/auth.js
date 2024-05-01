@@ -5,18 +5,23 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { queryDB } = require("../services/queryDB");
-const queries = require("../queryConstants/authQueries")
+const queries = require("../queryConstants/authQueries");
 
 exports.random = async (req, res) => {
+  console.log("Getting Response");
   try {
     console.log("Getting Response");
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
 exports.getUsers = async (req, res) => {
   try {
-    const { rows } = await queryDB (queries.trainerEmailID,[],"get email and id of all trainers")
+    const { rows } = await queryDB(
+      queries.trainerEmailID,
+      []
+      // "get email and id of all trainers"
+    );
     console.log({ rows });
     return res.status(200).json({
       success: true,
@@ -35,8 +40,12 @@ exports.register = async (req, res) => {
   try {
     const hashedPassword = await hash(password, 10);
     const status = true;
-    await queryDB(queries.registerTrainer,[email, hashedPassword, name, phone, status],"register a trainer")
-    return res.status(201).json({
+    await queryDB(
+      queries.registerTrainer,
+      [email, hashedPassword, name, phone, status],
+      "register a trainer"
+    );
+    return res.status(200).json({
       success: true,
       message: "The registraion was successfull",
     });
@@ -50,7 +59,6 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   let user = req.user;
-
   let payload = {
     id: user.trainer_id,
     email: user.email,
@@ -96,7 +104,11 @@ exports.logout = async (req, res) => {
 
 exports.forgotpassword = async (req, res) => {
   const { email } = req.body;
-  const user = await queryDB(queries.particularTrainerByEmail,[email],"get all data of a trainer");
+  const user = await queryDB(
+    queries.particularTrainerByEmail,
+    [email],
+    "get all data of a trainer"
+  );
 
   const secret = SECRET + user.rows[0].password;
 
@@ -158,7 +170,7 @@ exports.resetpassword = async (req, res) => {
       bcrypt
         .hash(password, 10)
         .then((hash) => {
-          queryDB(queries.updatePassword,[hash, id])
+          queryDB(queries.updatePassword, [hash, id])
             .then((u) =>
               res.status(201).json({
                 success: true,
@@ -178,4 +190,70 @@ exports.resetpassword = async (req, res) => {
         );
     }
   });
+};
+
+exports.getBatches = async (req, res) => {
+  try {
+    const { centre } = req.body;
+    // console.log(centre);
+    const { rows } = await queryDB(queries.centreidbycentrename, [centre]);
+
+    if (rows.length > 0) {
+      return res.status(200).json({
+        success: true,
+        users: rows,
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message:
+          "No data found for the specified centre or Centre does not Exist",
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+exports.getCentres = async (req, res) => {
+  try {
+    const { rows } = await queryDB(queries.centres);
+    if (rows.length > 0) {
+      console.log(rows);
+    }
+
+    return res.status(200).json({
+      success: true,
+      users: rows,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+exports.getStudents = async (req, res) => {
+  try {
+    const { batch } = req.body;
+    // console.log(batch);
+    const { rows } = await queryDB(queries.getStudents, [batch]);
+    if (rows.length > 0) {
+      console.log(rows);
+    }
+
+    return res.status(200).json({
+      success: true,
+      users: rows,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
 };

@@ -1,6 +1,5 @@
-
-const { Pool } = require('pg');
-const {config} = require ('../configs/config')
+const { Pool } = require("pg");
+const { config } = require("../configs/config");
 
 const aafPortalMain = new Pool({
   user: config.psql.user,
@@ -13,7 +12,7 @@ const aafPortalMain = new Pool({
 const connectDb = async (pool) => {
   await pool.connect((err) => {
     if (err) {
-      console.error('connection error', err.stack);
+      console.error("connection error", err.stack);
     }
   });
 };

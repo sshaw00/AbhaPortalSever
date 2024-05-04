@@ -257,3 +257,24 @@ exports.getStudents = async (req, res) => {
     });
   }
 };
+
+exports.addStudents = async (req, res) => {
+  const { centre, batch, studentId, name, contact, address } = req.body;
+  console.log(centre, batch, studentId, name, contact, address);
+  try {
+    await queryDB(
+      queries.registerStudent,
+      [centre, batch, studentId, name, contact, address],
+      "register a student"
+    );
+    return res.status(200).json({
+      success: true,
+      message: "The registraion was successfull",
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};

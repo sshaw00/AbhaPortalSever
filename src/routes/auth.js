@@ -12,6 +12,7 @@ const {
   getBatches,
   getCentres,
   getStudents,
+  addStudents,
 } = require("../controllers/auth");
 const {
   registerValidation,
@@ -45,5 +46,6 @@ router.post("/resetpassword/:id/:token", resetpassword);
 router.post("/student/get-batches", getBatches);
 router.get("/student/get-centres", getCentres);
 router.post("/student/get-students", getStudents);
+router.post("/student/add-students", addStudents);
 
 module.exports = router;

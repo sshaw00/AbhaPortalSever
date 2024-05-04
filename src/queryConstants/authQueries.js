@@ -11,6 +11,8 @@ const centreidbycentrename =
 const centres = "SELECT centre_id, name from centre";
 
 const getStudents = "SELECT * from student where batch_id = $1";
+const registerStudent =
+  "INSERT INTO student( centre_id,batch_id,student_id,  name, contact, address) VALUES ($1, $2,$3,$4,$5,$6)";
 module.exports = {
   trainerEmailID,
   registerTrainer,
@@ -20,4 +22,5 @@ module.exports = {
   centreidbycentrename,
   centres,
   getStudents,
+  registerStudent,
 };

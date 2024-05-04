@@ -7,7 +7,7 @@ const particularTrainerById =
 const updatePassword =
   "UPDATE trainer SET password = $1 WHERE trainer_id = $2 RETURNING *";
 const centreidbycentrename =
-  "SELECT batch_id, batch_name from batch where centre_id = $1";
+  "SELECT batch_id,centre_id, batch_name from batch where centre_id = $1";
 const centres = "SELECT centre_id, name from centre";
 
 const getStudents = "SELECT * from student where batch_id = $1";

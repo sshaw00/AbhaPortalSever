@@ -71,7 +71,7 @@ pool.connect((err, client, done) => {
       `Connected to database at ${process.env.PSQL_HOST}:${process.env.PSQL_PORT}/${process.env.PSQL_DATABASE}`
     );
     app.listen(PORT, () => {
-      console.log(`The app is running at ${}`);
+      console.log(`The app is running at ${SERVER_URL}`);
     });
   }
 });

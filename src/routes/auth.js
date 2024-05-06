@@ -18,6 +18,7 @@ const {
   registerValidation,
   loginValidation,
   forgotpasswordvalidation,
+  resetPasswordValidation,
 } = require("../validators/auth");
 const {
   validationMiddleware,
@@ -42,7 +43,11 @@ router.post(
   validationMiddleware,
   forgotpassword
 );
-router.post("/resetpassword/:id/:token", resetpassword);
+router.post(
+  "/resetpassword/:id/:token",
+  resetPasswordValidation,
+  resetpassword
+);
 router.post("/student/get-batches", getBatches);
 router.get("/student/get-centres", getCentres);
 router.post("/student/get-students", getStudents);

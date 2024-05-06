@@ -50,6 +50,7 @@ const loginFieldsCheck = check("email").custom(async (value, { req }) => {
 
 module.exports = {
   registerValidation: [email, password, emailExists],
+  resetPasswordValidation: [password],
   loginValidation: [loginFieldsCheck],
   forgotpasswordvalidation: [email, EmailDoesNotExist],
 };

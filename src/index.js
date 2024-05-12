@@ -38,7 +38,8 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 const authRoutes = require("./routes/auth");
-
+const uploadRoutes = require("./upload/s3");
+app.use("", uploadRoutes);
 app.use("/api", authRoutes);
 
 // // const appStart = () => {

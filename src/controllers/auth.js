@@ -195,9 +195,9 @@ exports.resetpassword = async (req, res) => {
 exports.getBatches = async (req, res) => {
   try {
     const { centre } = req.body;
-    // console.log(centre);
+    console.log(centre);
     const { rows } = await queryDB(queries.centreidbycentrename, [centre]);
-
+    console.log(rows);
     if (rows.length > 0) {
       return res.status(200).json({
         success: true,
@@ -240,7 +240,7 @@ exports.getCentres = async (req, res) => {
 exports.getStudents = async (req, res) => {
   try {
     const { batch } = req.body;
-    // console.log(batch);
+    console.log(batch);
     const { rows } = await queryDB(queries.getStudents, [batch]);
     if (rows.length > 0) {
       console.log(rows);
@@ -258,18 +258,146 @@ exports.getStudents = async (req, res) => {
   }
 };
 
+exports.getStudentsByCentre = async (req, res) => {
+  try {
+    const { centre } = req.body;
+    console.log(centre);
+    const { rows } = await queryDB(queries.getStudentsByCentre, [centre]);
+    if (rows.length > 0) {
+      console.log(rows);
+    }
+
+    return res.status(200).json({
+      success: true,
+      users: rows,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
 exports.addStudents = async (req, res) => {
-  const { centre, batch, studentId, name, contact, address } = req.body;
-  console.log(centre, batch, studentId, name, contact, address);
+  const {
+    centre_name,
+    centre_id,
+    batch_name,
+    batch_id,
+    studentId,
+    name,
+    contact,
+    address,
+  } = req.body;
+  console.log(
+    centre_name,
+    centre_id,
+    batch_name,
+    batch_id,
+    studentId,
+    name,
+    contact,
+    address
+  );
   try {
     await queryDB(
       queries.registerStudent,
-      [centre, batch, studentId, name, contact, address],
+      [
+        centre_name,
+        centre_id,
+        batch_name,
+        batch_id,
+        studentId,
+        name,
+        contact,
+        address,
+      ],
       "register a student"
     );
     return res.status(200).json({
       success: true,
       message: "The registraion was successfull",
+    });
+  } catch (error) {
+    console.log(error.message);
+    if (
+      error.message ==
+      'duplicate key value violates unique constraint "student_pkey"'
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Student ID Already Exists",
+      });
+    }
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+exports.deleteStudent = async (req, res) => {
+  try {
+    const { studentID } = req.body;
+    const { batchID } = req.body;
+    console.log(studentID);
+    await queryDB(queries.deleteStudent, [studentID]);
+    const { rows } = await queryDB(queries.getStudents, [batchID]);
+    if (rows.length > 0) {
+      console.log(rows);
+    }
+
+    return res.status(200).json({
+      success: true,
+      users: rows,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+exports.addBatches = async (req, res) => {
+  const { centre_id, batch_id, batch_name } = req.body;
+  console.log(centre_id, batch_name, batch_id);
+  try {
+    await queryDB(
+      queries.registerBatch,
+      [centre_id, batch_id, batch_name],
+      "register a student"
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Batch registered successfully",
+    });
+  } catch (error) {
+    console.log(error.message);
+    if (
+      error.message ==
+      'duplicate key value violates unique constraint "batch_pkey"'
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Batch ID Already Exists",
+      });
+    }
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+exports.updateStudent = async (req, res) => {
+  try {
+    const { name, contact, address, student_id } = req.body;
+    console.log(name, contact, address, student_id);
+    await queryDB(queries.updateStudent, [name, contact, address, student_id]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Updation Successfull",
     });
   } catch (error) {
     console.log(error.message);

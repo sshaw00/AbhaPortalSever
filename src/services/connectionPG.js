@@ -7,6 +7,10 @@ const aafPortalMain = new Pool({
   database: config.psql.database,
   password: config.psql.password,
   port: config.psql.port,
+  // ssl: {
+  //   require: true,
+  //   rejectUnauthorized: false,
+  // },
 });
 
 const connectDb = async (pool) => {

@@ -11,8 +11,14 @@ const centreidbycentrename =
 const centres = "SELECT centre_id, name from centre";
 
 const getStudents = "SELECT * from student where batch_id = $1";
+const getStudentsByCentre = "SELECT * from student where centre_id = $1";
 const registerStudent =
-  "INSERT INTO student( centre_id,batch_id,student_id,  name, contact, address) VALUES ($1, $2,$3,$4,$5,$6)";
+  "INSERT INTO student( centre_name,centre_id, batch_name,batch_id,student_id,  name, contact, address) VALUES ($1, $2,$3,$4,$5,$6,$7,$8)";
+const deleteStudent = "DELETE FROM student WHERE student_id = $1";
+const registerBatch =
+  "INSERT INTO batch( centre_id,batch_id, batch_name) VALUES ($1, $2,$3)";
+const updateStudent =
+  "update student set name = $1, contact = $2, address =$3 where student_id= $4;";
 module.exports = {
   trainerEmailID,
   registerTrainer,
@@ -23,4 +29,8 @@ module.exports = {
   centres,
   getStudents,
   registerStudent,
+  getStudentsByCentre,
+  deleteStudent,
+  registerBatch,
+  updateStudent,
 };

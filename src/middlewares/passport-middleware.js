@@ -16,14 +16,18 @@ const opts = {
 };
 
 passport.use(
-  new Strategy(opts, async ({ id }, done) => {
+  new Strategy(opts, async ({ employee_id }, done) => {
     try {
-      const { rows } = await queryDB(queries.particularTrainerById, [id]);
+      console.log(id);
+      const { rows } = await queryDB(queries.particularTrainerById, [
+        employee_id,
+      ]);
+      console.log(rows);
       if (!rows.length) {
         throw new Error("401 not authorized");
       }
 
-      let user = { id: rows[0].trainer_id, email: rows[0].email };
+      let user = { id: rows[0].employee_id, email: rows[0].employee_email };
 
       return await done(null, user);
     } catch (error) {

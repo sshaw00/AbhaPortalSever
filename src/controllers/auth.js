@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
     id: user.trainer_id,
     email: user.email,
   };
-
+  console.log();
   try {
     const token = await sign(payload, SECRET);
     return res.status(200).cookie("token", token, { httpOnly: true }).json({
@@ -81,6 +81,8 @@ exports.login = async (req, res) => {
 exports.protected = async (req, res) => {
   try {
     return res.status(200).json({
+      success: true,
+      message: "Logged out succefully",
       info: "protected info",
     });
   } catch (error) {
@@ -142,7 +144,7 @@ exports.forgotpassword = async (req, res) => {
         });
       }
     });
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Mail has been sent",
     });
@@ -401,6 +403,37 @@ exports.updateStudent = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+exports.addCentre = async (req, res) => {
+  const { centre_type, name, number, address, pocName, pocEmail, pocPhone } =
+    req.body;
+  console.log(centre_type, name, number, address, pocName, pocEmail, pocPhone);
+  try {
+    await queryDB(
+      queries.registerCentre,
+      [number, centre_type, name, address, true],
+      "register a student"
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Centre registered successfully",
+    });
+  } catch (error) {
+    console.log(error.message);
+    if (
+      error.message ==
+      'duplicate key value violates unique constraint "batch_pkey"'
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Batch ID Already Exists",
+      });
+    }
     return res.status(500).json({
       error: error.message,
     });

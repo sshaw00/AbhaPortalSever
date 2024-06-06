@@ -17,6 +17,7 @@ const {
   deleteStudent,
   addBatches,
   updateStudent,
+  addCentre,
 } = require("../controllers/auth");
 const {
   registerValidation,
@@ -40,7 +41,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/get-users", getUsers);
-router.get("/protected", userAuth, protected);
+router.get("/auth/protected", userAuth, protected);
 router.post(
   "/auth/register",
   registerValidation,
@@ -48,11 +49,11 @@ router.post(
   register
 );
 router.post("/auth/login", loginValidation, validationMiddleware, login);
-router.get("/logout", logout);
+router.get("/auth/logout", logout);
 
 router.get("/random", random);
 router.post(
-  "/forgotpassword",
+  "/auth/forgotpassword",
   forgotpasswordvalidation,
   validationMiddleware,
   forgotpassword
@@ -70,5 +71,5 @@ router.post("/student/add-students", addStudents);
 router.post("/student/add-batches", addBatches);
 router.post("/student/delete-student", deleteStudent);
 router.post("/student/update-student", updateStudent);
-
+router.post("/auth/add-centre", addCentre);
 module.exports = router;

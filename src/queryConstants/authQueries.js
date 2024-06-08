@@ -22,6 +22,9 @@ const updateStudent =
   "update student set name = $1, contact = $2, address =$3 where student_id= $4;";
 const registerCentre =
   "INSERT INTO centre (centre_number,centre_type,centre_name,centre_address,status) values($1,$2,$3,$4,$5)";
+const fetchCentre = "SELECT centre_id from centre where centre_name = $1";
+const addPartner =
+  "INSERT INTO partner (centre_id, partner_name, poc_name, poc_phone, poc_email, status) VALUES ($1,$2,$3,$4,$5,$6)";
 module.exports = {
   trainerEmailID,
   registerTrainer,
@@ -37,4 +40,6 @@ module.exports = {
   registerBatch,
   updateStudent,
   registerCentre,
+  fetchCentre,
+  addPartner,
 };

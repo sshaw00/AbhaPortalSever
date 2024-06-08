@@ -41,7 +41,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/get-users", getUsers);
-router.get("/auth/protected", userAuth, protected);
+router.get("/auth/protected", protected);
 router.post(
   "/auth/register",
   registerValidation,

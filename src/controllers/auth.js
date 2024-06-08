@@ -419,6 +419,38 @@ exports.addCentre = async (req, res) => {
       [number, centre_type, name, address, true],
       "register a student"
     );
+    if (centre_type == "Partner Centre") {
+      const id = await queryDB(queries.fetchCentre, [name], "fetch Centre ID");
+      console.log(id.rows[0].centre_id, name, pocName, pocPhone, pocEmail);
+      try {
+        await queryDB(queries.addPartner, [
+          id.rows[0].centre_id,
+          name,
+          pocName,
+          pocPhone,
+          pocEmail,
+          true,
+        ]);
+        return res.status(200).json({
+          success: true,
+          message: "Partner registered successfully",
+        });
+      } catch (error) {
+        console.log(error.message);
+        if (
+          error.message ==
+          'duplicate key value violates unique constraint "batch_pkey"'
+        ) {
+          return res.status(404).json({
+            success: false,
+            message: "Batch ID Already Exists",
+          });
+        }
+        return res.status(500).json({
+          error: error.message,
+        });
+      }
+    }
     return res.status(200).json({
       success: true,
       message: "Centre registered successfully",
